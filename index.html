@@ -2510,7 +2510,7 @@ async function generateTool(type){
     <p style="font-size:11px;color:var(--muted);margin-top:6px">Creating your result. This may take a few moments.</p>
   </div>`;
 
-  const button=document.querySelector(\`button[onclick="generateTool('\${type}')"]\`);
+const button=document.querySelector(`button[onclick="generateTool('${type}')"]`);
   if(button){button.disabled=true;button.dataset.originalText=button.textContent;button.textContent="Generating...";}
 
   try{
