@@ -2594,7 +2594,7 @@ async function generateTool(type){
     if(button){button.disabled=false;button.textContent=button.dataset.originalText||"Generate";}
   }
 }
-
+window.generateTool = generateTool;
 /* COPY AND DOWNLOAD */
 
 function copyResult(id){
