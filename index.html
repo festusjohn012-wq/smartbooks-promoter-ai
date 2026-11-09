@@ -2526,7 +2526,7 @@ const button=document.querySelector(`button[onclick="generateTool('${type}')"]`)
     });
 
     const resultId=type+"ResultText";
-    box.innerHTML=\`
+    box.innerHTML=`
       <div class="output-head">
         <h3>✨ SmartBook AI Result</h3>
         <span class="badge">AI GENERATED</span>
@@ -2536,7 +2536,7 @@ const button=document.querySelector(`button[onclick="generateTool('${type}')"]`)
         <button class="btn primary" onclick="copyResult('\${resultId}')">📋 Copy</button>
         <button class="btn secondary" onclick="saveResult('\${resultId}','\${type}')">💾 Save</button>
         <button class="btn light" onclick="downloadResult('\${resultId}')">⬇ Download TXT</button>
-      </div>\`;
+      </div>`;
     box.classList.add("show");
 
     if(type==="niche"||type==="research"||type==="keywords"){
