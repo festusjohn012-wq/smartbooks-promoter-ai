@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Festus Smartbooks Marketing Copilot</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --purple: #6541D9;
+  --deep: #40218E;
+  --lavender: #EEE9FF;
+  --turquoise: #35C6B2;
+  --gold: #F4C76A;
+  --white: #FFFFFF;
+  --bg: #F7F6FC;
+  --text: #292542;
+  --muted: #88849D;
+  --border: #ECEAF3;
+  --green: #24B47E;
+  --red: #E85B73;
+  --shadow: 0 8px 30px rgba(54,35,110,.07);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 255px;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 25px 16px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 5px 8px 28px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,var(--purple),#A58BFF);
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 22px;
+  box-shadow: 0 5px 15px rgba(101,65,217,.25);
+}
+
+.brand-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.brand-name span {
+  display: block;
+  color: var(--purple);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #AAA5BB;
+  letter-spacing: 1.5px;
+  padding: 15px 12px 9px;
+}
+
+.nav-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin: 3px 0;
+  border-radius: 11px;
+  text-align: left;
+  color: #77728E;
+  font-size: 13px;
+  font-weight: 600;
+  transition: .2s;
+}
+
+.nav-item:hover {
+  background: var(--lavender);
+  color: var(--purple);
+}
+
+.nav-item.active {
+  background: linear-gradient(100deg,#EEE8FF,#F6F2FF);
+  color: var(--purple);
+  font-weight: 800;
+}
+
+.nav-icon {
+  font-size: 18px;
+  width: 23px;
+  text-align: center;
+}
+
+.sidebar-bottom {
+  margin-top: 25px;
+  padding: 16px;
+  background: linear-gradient(135deg,#F0EAFE,#E8FAF7);
+  border-radius: 14px;
+}
+
+.sidebar-bottom strong {
+  font-size: 12px;
+}
+
+.sidebar-bottom p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 7px;
+}
+
+/* MAIN AREA */
+
+.main {
+  margin-left: 255px;
+  width: calc(100% - 255px);
+  min-height: 100vh;
+}
+
+.topbar {
+  height: 76px;
+  background: rgba(255,255,255,.95);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.topbar-badge {
+  background: var(--lavender);
+  color: var(--purple);
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.avatar {
+  width: 37px;
+  height: 37px;
+  background: linear-gradient(135deg,var(--purple),var(--turquoise));
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.content {
+  padding: 30px;
+  max-width: 1500px;
+  margin: auto;
+}
+
+.page {
+  display: none;
+  animation: fadeIn .3s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(7px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+.page-heading {
+  margin-bottom: 24px;
+}
+
+.page-heading h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.page-heading p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media(max-width:850px) {
+  .sidebar {
+    width: 220px;
+  }
+  .main {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+  .content {
+    padding: 20px;
+  }
+}
+
+@media(max-width:650px) {
+  .sidebar {
+    width: 75px;
+    padding: 18px 8px;
+  }
+  .brand {
+    justify-content: center;
+    padding: 5px 0 25px;
+  }
+  .brand-name,
+  .nav-label,
+  .nav-text,
+  .sidebar-bottom {
+    display: none;
+  }
+  .nav-item {
+    justify-content: center;
+    padding: 13px 5px;
+  }
+  .nav-icon {
+    font-size: 20px;
+  }
+  .main {
+    margin-left: 75px;
+    width: calc(100% - 75px);
+  }
+  .topbar {
+    padding: 0 14px;
+    height: 65px;
+  }
+  .topbar-title {
+    font-size: 13px;
+  }
+  .topbar-badge {
+    display: none;
+  }
+  .content {
+    padding: 16px 12px;
+  }
+  .page-heading h1 {
+    font-size: 21px;
+  }
+}
+  /* DASHBOARD COMPONENTS */
+
+.hero {
+  background: linear-gradient(115deg,#5631C5,#8765E8 65%,#35C6B2);
+  border-radius: 20px;
+  padding: 32px;
+  color: white;
+  margin-bottom: 23px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.hero h1 {
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-size: 27px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  max-width: 650px;
+}
+
+.hero p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #F1ECFF;
+  max-width: 650px;
+  margin-bottom: 20px;
+}
+
+.hero-decoration {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 100px;
+  opacity: .16;
+}
+
+.button {
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  background: var(--purple);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  transition: .2s;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  opacity: .92;
+}
+
+.button.white {
+  background: white;
+  color: var(--purple);
+}
+
+.button.light {
+  background: var(--lavender);
+  color: var(--purple);
+}
+
+.button.teal {
+  background: var(--turquoise);
+  color: #153E3A;
+}
+
+.button.gold {
+  background: var(--gold);
+  color: #49350D;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 15px;
+  margin-bottom: 23px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 17px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-icon {
+  width: 47px;
+  height: 47px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: var(--lavender);
+}
+
+.stat-icon.teal {
+  background: #E2F8F4;
+}
+
+.stat-icon.gold {
+  background: #FFF5DC;
+}
+
+.stat-icon.pink {
+  background: #FCEAF1;
+}
+
+.stat-number {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 3px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.section-title {
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 17px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+
+.quick-action {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #FCFBFF;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.quick-action:hover {
+  border-color: var(--purple);
+  transform: translateY(-2px);
+}
+
+.quick-action .emoji {
+  font-size: 23px;
+  margin-bottom: 9px;
+}
+
+.quick-action strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.quick-action p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px 15px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.empty-state span {
+  display: block;
+  font-size: 35px;
+  margin-bottom: 10px;
+}
+
+@media(max-width:950px) {
+  .stats-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width:650px) {
+  .hero {
+    padding: 22px;
+  }
+  .hero h1 {
+    font-size: 21px;
+  }
+  .hero-decoration {
+    right: 10px;
+    font-size: 65px;
+  }
+  .stats-grid {
+    gap: 9px;
+  }
+  .stat-card {
+    padding: 13px;
+    gap: 9px;
+  }
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+  .stat-number {
+    font-size: 20px;
+  }
+  .stat-label {
+    font-size: 10px;
+  }
+  .card {
+    padding: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+  <div class="brand">
+    <div class="brand-icon">📚</div>
+    <div class="brand-name">
+      FESTUS SMARTBOOKS
+      <span>MARKETING COPILOT</span>
+    </div>
+  </div>
+
+  <div class="nav-label">MAIN WORKSPACE</div>
+
+  <nav>
+    <button class="nav-item active" onclick="showPage('overview',this)">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-text">Overview</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('books',this)">
+      <span class="nav-icon">📚</span>
+      <span class="nav-text">My Books</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('audience',this)">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-text">Audience Intelligence</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('creator',this)">
+      <span class="nav-icon">✨</span>
+      <span class="nav-text">Content Creator</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('autopilot',this)">
+      <span class="nav-icon">🚀</span>
+      <span class="nav-text">Marketing Autopilot</span>
+    </button>
+  </nav>
+
+  <div class="nav-label">MARKETING TOOLS</div>
+
+  <nav>
+    <button class="nav-item" onclick="showPage('connections',this)">
+      <span class="nav-icon">🔗</span>
+      <span class="nav-text">Social Connections</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('calendar',this)">
+      <span class="nav-icon">📅</span>
+      <span class="nav-text">Marketing Calendar</span>
+    </button>
+
+    <button class="nav-item" onclick="showPage('analytics',this)">
+      <span class="nav-icon">📊</span>
+      <span class="nav-text">Traffic & Analytics</span>
+    </button>
+  </nav>
+
+  <div class="nav-label">PREFERENCES</div>
+
+  <nav>
+    <button class="nav-item" onclick="showPage('settings',this)">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-text">Settings</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <strong>💜 Your books, more readers</strong>
+    <p>Your intelligent assistant for promoting books already published on Amazon.</p>
+  </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div class="topbar-title" id="pageTitle">Your Marketing Overview</div>
+
+  <div class="topbar-right">
+    <span class="topbar-badge">● FREE MODE</span>
+    <div class="avatar">FS</div>
+  </div>
+</header>
+
+<div class="content">
+
+<section class="page active" id="overview">
+
+  <div class="hero">
+    <div class="hero-decoration">📖</div>
+
+    <h1>Give Your Books the Attention They Deserve!</h1>
+
+    <p>
+      Welcome to Festus Smartbooks Marketing Copilot.
+      Organise your published Amazon books, understand your readers
+      and create engaging promotional content for your social media.
+    </p>
+
+    <button class="button white"
+      onclick="showPage('books',document.querySelector('[onclick*=books]'))">
+      + Add Your First Book
+    </button>
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="card stat-card">
+      <div class="stat-icon">📚</div>
+      <div>
+        <div class="stat-number" id="bookCount">0</div>
+        <div class="stat-label">Books Added</div>
+      </div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon teal">✍️</div>
+      <div>
+        <div class="stat-number" id="contentCount">0</div>
+        <div class="stat-label">Content Created</div>
+      </div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon gold">📅</div>
+      <div>
+        <div class="stat-number" id="planCount">0</div>
+        <div class="stat-label">Marketing Plans</div>
+      </div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon pink">🌐</div>
+      <div>
+        <div class="stat-number">3</div>
+        <div class="stat-label">Target Platforms</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="two-columns">
+
+    <div class="card">
+      <h3 class="section-title">⚡ Quick Actions</h3>
+
+      <div class="quick-actions">
+
+        <div class="quick-action"
+          onclick="showPage('books',document.querySelector('[onclick*=books]'))">
+          <div class="emoji">📚</div>
+          <strong>Add a Book</strong>
+          <p>Upload your cover and book details.</p>
+        </div>
+
+        <div class="quick-action"
+          onclick="showPage('creator',document.querySelector('[onclick*=creator]'))">
+          <div class="emoji">✨</div>
+          <strong>Create Content</strong>
+          <p>Generate fresh promotional ideas.</p>
+        </div>
+
+        <div class="quick-action"
+          onclick="showPage('audience',document.querySelector('[onclick*=audience]'))">
+          <div class="emoji">🎯</div>
+          <strong>Find Readers</strong>
+          <p>Explore your potential audience.</p>
+        </div>
+
+        <div class="quick-action"
+          onclick="showPage('autopilot',document.querySelector('[onclick*=autopilot]'))">
+          <div class="emoji">🚀</div>
+          <strong>Marketing Plan</strong>
+          <p>Prepare a promotion schedule.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="section-title">📌 Getting Started</h3>
+      <p class="muted">
+        First, add a book that is already published on Amazon.
+        Then use the Copilot to create useful, interesting and
+        promotional content for the readers who may love it.
+      </p>
+      <br>
+      <p class="muted">
+        Your books remain yours. This tool helps you market them;
+        it does not publish books to KDP.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+<!-- MY BOOKS SECTION -->
+
+<section class="page" id="books">
+
+  <div class="page-heading">
+    <h1>📚 My Book Collection</h1>
+    <p>Manage all your books already published on Amazon in one place.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">➕ Add a New Book</h3>
+
+    <form id="bookForm">
+
+      <div class="field">
+        <label>Upload Book Cover</label>
+
+        <div class="upload-box">
+          <div style="font-size:35px">🖼️</div>
+          <p class="muted">Choose your book cover image</p>
+
+          <input type="file" id="bookCover" accept="image/*">
+
+          <img id="coverPreview" class="cover-preview" style="display:none">
+        </div>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Book Title *</label>
+          <input type="text" id="bookTitle" required
+          placeholder="Enter your book title">
+        </div>
+
+        <div class="field">
+          <label>Book Category / Niche *</label>
+          <input type="text" id="bookCategory" required
+          placeholder="e.g. Children's Travel Guide">
+        </div>
+
+        <div class="field full">
+          <label>Book Description *</label>
+          <textarea id="bookDescription" required
+          placeholder="Describe what your book offers readers..."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Target Audience</label>
+          <input type="text" id="bookAudience"
+          placeholder="e.g. Parents and children">
+        </div>
+
+        <div class="field">
+          <label>Book Price (Optional)</label>
+          <input type="text" id="bookPrice"
+          placeholder="e.g. £9.99">
+        </div>
+
+        <div class="field full">
+          <label>Amazon Purchase Link *</label>
+          <input type="url" id="amazonLink" required
+          placeholder="https://www.amazon.co.uk/...">
+        </div>
+
+        <div class="field full">
+          <label>Select Marketing Platforms</label>
+
+          <div class="platform-options">
+
+            <label>
+              <input type="checkbox" name="platform"
+              value="Facebook" checked>
+              📘 Facebook
+            </label>
+
+            <label>
+              <input type="checkbox" name="platform"
+              value="Instagram" checked>
+              📸 Instagram
+            </label>
+
+            <label>
+              <input type="checkbox" name="platform"
+              value="Pinterest" checked>
+              📌 Pinterest
+            </label>
+
+          </div>
+        </div>
+
+      </div>
+
+      <button type="submit" class="button">
+        💾 Save My Book
+      </button>
+
+      <div id="bookStatus" class="status-message"></div>
+
+    </form>
+
+  </div>
+
+  <div class="card">
+    <h3 class="section-title">📖 Your Saved Books</h3>
+
+    <div id="bookList" class="book-grid">
+
+      <div class="empty-state">
+        <span>📚</span>
+        Your book collection is empty.
+        Add your first book above.
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- AUDIENCE INTELLIGENCE SECTION -->
+
+<section class="page" id="audience">
+
+  <div class="page-heading">
+    <h1>🎯 Audience Intelligence</h1>
+    <p>Understand the readers who may be interested in your books.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Discover Your Potential Readers</h3>
+
+    <div class="field">
+      <label>Select a Book</label>
+      <select id="audienceBook">
+        <option value="">Select a book first</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>What would you like to discover?</label>
+
+      <select id="audienceGoal">
+        <option>Identify my ideal readers</option>
+        <option>Discover reader interests</option>
+        <option>Find content ideas for my audience</option>
+        <option>Understand reader problems and needs</option>
+        <option>Suggest relevant communities and topics</option>
+        <option>Develop a complete audience strategy</option>
+      </select>
+    </div>
+
+    <button class="button" onclick="generateAudience()">
+      🎯 Analyse My Audience
+    </button>
+
+    <div id="audienceOutput" class="output-box">
+      Your audience intelligence report will appear here.
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CONTENT CREATOR SECTION -->
+
+<section class="page" id="creator">
+
+  <div class="page-heading">
+    <h1>✨ AI Content Creator</h1>
+    <p>Create interesting promotional content that connects with readers.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Create Promotional Content</h3>
+
+    <div class="field">
+      <label>Select Your Book</label>
+      <select id="contentBook">
+        <option value="">Select a book first</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Select Social Media Platform</label>
+      <select id="contentPlatform">
+        <option>Facebook</option>
+        <option>Instagram</option>
+        <option>Pinterest</option>
+        <option>All Platforms</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Choose Content Style</label>
+      <select id="contentStyle">
+
+        <option>Helpful educational content</option>
+        <option>Interesting storytelling</option>
+        <option>Fun and entertaining content</option>
+        <option>Questions that encourage discussion</option>
+        <option>Useful tips and advice</option>
+        <option>Occasional direct book promotion</option>
+        <option>Mixed promotional strategy</option>
+
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Additional Instructions (Optional)</label>
+      <textarea id="contentInstructions"
+      placeholder="Tell the AI what kind of content you want..."></textarea>
+    </div>
+
+    <button class="button" id="createButton"
+    onclick="createContent()">
+      ✨ Generate Content
+    </button>
+
+    <div id="contentOutput" class="output-box">
+      Your AI-generated content will appear here.
+    </div>
+
+    <button class="button light" onclick="copyContent()">
+      📋 Copy Content
+    </button>
+
+  </div>
+
+      </section>
+      <!-- MARKETING AUTOPILOT SECTION -->
+
+<section class="page" id="autopilot">
+
+  <div class="page-heading">
+    <h1>🚀 Marketing Autopilot</h1>
+    <p>Plan and organise promotional activities for your books.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Build Your Marketing Schedule</h3>
+
+    <div class="field">
+      <label>Select a Book</label>
+      <select id="autoBook">
+        <option value="">Select a book first</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Promotion Frequency</label>
+      <select id="frequency">
+        <option>Once a day</option>
+        <option>Three times a week</option>
+        <option>Five times a week</option>
+        <option>Once a week</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Choose Platforms</label>
+
+      <div class="platform-options">
+        <label><input type="checkbox" id="autoFacebook" checked> 📘 Facebook</label>
+        <label><input type="checkbox" id="autoInstagram" checked> 📸 Instagram</label>
+        <label><input type="checkbox" id="autoPinterest" checked> 📌 Pinterest</label>
+      </div>
+    </div>
+
+    <button class="button" onclick="preparePlan()">
+      🚀 Prepare My Marketing Plan
+    </button>
+
+    <div id="planOutput" class="output-box">
+      Your marketing plan will appear here.
+    </div>
+
+  </div>
+
+  <div class="card">
+    <h3 class="section-title">Important Publishing Information</h3>
+
+    <p class="muted">
+      Automatic social media publishing requires official platform
+      authorisation and approved API permissions. Until those
+      connections are configured, you will review and publish
+      your content manually.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- SOCIAL CONNECTIONS SECTION -->
+
+<section class="page" id="connections">
+
+  <div class="page-heading">
+    <h1>🔗 Social Connections</h1>
+    <p>Manage the social media accounts you want to use for book promotion.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">📘 Facebook</h3>
+
+    <p class="muted">
+      Connect an eligible Facebook Page using official Meta
+      authorisation when the integration is configured.
+    </p>
+
+    <br>
+
+    <span class="connection-status">Not Connected</span>
+
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">📸 Instagram</h3>
+
+    <p class="muted">
+      Connect an eligible Instagram Professional account.
+      Publishing permissions depend on Meta's requirements.
+    </p>
+
+    <br>
+
+    <span class="connection-status">Not Connected</span>
+
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">📌 Pinterest</h3>
+
+    <p class="muted">
+      Connect your Pinterest Business account through its
+      official authorisation process.
+    </p>
+
+    <br>
+
+    <span class="connection-status">Not Connected</span>
+
+  </div>
+
+  <div class="card">
+    <h3 class="section-title">🔐 Account Security</h3>
+
+    <p class="muted">
+      Your social media passwords should never be entered into
+      this dashboard. Connections will use official account
+      authorisation when available.
+    </p>
+  </div>
+
+</section>
+
+
+<!-- MARKETING CALENDAR SECTION -->
+
+<section class="page" id="calendar">
+
+  <div class="page-heading">
+    <h1>📅 Marketing Calendar</h1>
+    <p>Keep track of your planned promotional activities.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Your Marketing Activities</h3>
+
+    <div id="calendarOutput" class="empty-state">
+      <span>📅</span>
+      No marketing activities yet.
+      Prepare a marketing plan to get started.
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ANALYTICS SECTION -->
+
+<section class="page" id="analytics">
+
+  <div class="page-heading">
+    <h1>📊 Traffic & Analytics</h1>
+    <p>Monitor your book marketing activities.</p>
+  </div>
+
+  <div class="stats-grid">
+
+    <div class="card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-number" id="analyticsBooks">0</div>
+      <div class="stat-label">Books Added</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon teal">✍️</div>
+      <div class="stat-number" id="analyticsContent">0</div>
+      <div class="stat-label">Content Created</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon gold">📅</div>
+      <div class="stat-number" id="analyticsPlans">0</div>
+      <div class="stat-label">Plans Prepared</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Marketing Performance</h3>
+
+    <p class="muted">
+      Actual reach, engagement and link clicks will be displayed
+      when supported social media connections and tracking
+      integrations are available.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS SECTION -->
+
+<section class="page" id="settings">
+
+  <div class="page-heading">
+    <h1>⚙️ Settings</h1>
+    <p>Manage your Marketing Copilot preferences.</p>
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Your Marketing Assistant</h3>
+
+    <p class="muted">
+      Product: Festus Smartbooks Marketing Copilot
+    </p>
+
+    <p class="muted">
+      AI service: Existing SmartBook Promoter AI Worker
+    </p>
+
+    <p class="muted">
+      Marketing mode: Free-tier services wherever available.
+    </p>
+
+    <p class="muted">
+      Publishing mode: Manual approval until official
+      social media integrations are configured.
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3 class="section-title">Privacy & Safety</h3>
+
+    <p class="muted">
+      Your book information is stored in your browser.
+      Do not enter social media passwords or private account
+      credentials into this dashboard.
+    </p>
+
+  </div>
+
+  </section>
+  <style>
+
+/* FORM DESIGN */
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+input[type="text"],
+input[type="url"],
+input[type="file"],
+textarea,
+select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #FFFFFF;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px #EEE9FF;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+/* UPLOAD DESIGN */
+
+.upload-box {
+  border: 2px dashed #D9CFF6;
+  border-radius: 13px;
+  padding: 24px;
+  text-align: center;
+  background: #FBFAFF;
+}
+
+.upload-box input {
+  margin-top: 12px;
+}
+
+.cover-preview {
+  display: block;
+  max-width: 140px;
+  max-height: 180px;
+  object-fit: contain;
+  margin: 15px auto 0;
+  border-radius: 8px;
+}
+
+/* PLATFORM DESIGN */
+
+.platform-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.platform-options label {
+  background: #F5F2FC;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.platform-options input {
+  width: auto;
+  accent-color: var(--purple);
+}
+
+.connection-status {
+  display: inline-block;
+  background: #FFF4DB;
+  color: #946C14;
+  padding: 8px 13px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* OUTPUT DESIGN */
+
+.output-box {
+  background: #F8F6FD;
+  border: 1px solid #EAE5F7;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 20px 0;
+  min-height: 90px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.status-message {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--green);
+}
+
+/* BOOK COLLECTION */
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+}
+
+.book-card {
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 13px;
+  background: white;
+  overflow: hidden;
+}
+
+.book-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  background: #F8F7FB;
+  border-radius: 9px;
+  margin-bottom: 12px;
+}
+
+.book-card h4 {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.book-card p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 9px;
+}
+
+.book-card a {
+  color: var(--purple);
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.book-card button {
+  margin-top: 10px;
+}
+
+/* MOBILE RESPONSIVENESS */
+
+@media(max-width:850px) {
+  .book-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+}
+
+@media(max-width:650px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full {
+    grid-column: auto;
+  }
+
+  .book-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-options {
+    gap: 7px;
+  }
+
+  .platform-options label {
+    padding: 9px;
+    font-size: 11px;
+  }
+}
+
+      </style>
+      <script>
+
+// =====================================
+// FESTUS SMARTBOOKS MARKETING COPILOT
+// =====================================
+
+// EXISTING AI BACKEND
+const AI_ENDPOINT =
+"https://smartbook-promoter-v2.festusjohn012.workers.dev/api/generate";
+
+
+// =====================================
+// DATA STORAGE
+// =====================================
+
+let books = JSON.parse(
+  localStorage.getItem("festus_copilot_books") || "[]"
+);
+
+let contentHistory = JSON.parse(
+  localStorage.getItem("festus_copilot_content") || "[]"
+);
+
+let marketingPlans = JSON.parse(
+  localStorage.getItem("festus_copilot_plans") || "[]"
+);
+
+function saveData() {
+  localStorage.setItem(
+    "festus_copilot_books",
+    JSON.stringify(books)
+  );
+
+  localStorage.setItem(
+    "festus_copilot_content",
+    JSON.stringify(contentHistory)
+  );
+
+  localStorage.setItem(
+    "festus_copilot_plans",
+    JSON.stringify(marketingPlans)
+  );
+}
+
+
+// =====================================
+// PAGE NAVIGATION
+// =====================================
+
+function showPage(pageId, button) {
+
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active");
+  });
+
+  const selectedPage = document.getElementById(pageId);
+
+  if (selectedPage) {
+    selectedPage.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  if (button) {
+    button.classList.add("active");
+  }
+
+  const titles = {
+    overview: "Your Marketing Overview",
+    books: "My Book Collection",
+    audience: "Audience Intelligence",
+    creator: "AI Content Creator",
+    autopilot: "Marketing Autopilot",
+    connections: "Social Connections",
+    calendar: "Marketing Calendar",
+    analytics: "Traffic & Analytics",
+    settings: "Settings"
+  };
+
+  document.getElementById("pageTitle").textContent =
+    titles[pageId] || "Marketing Copilot";
+}
+
+
+// =====================================
+// BOOK COVER PREVIEW
+// =====================================
+
+document.getElementById("bookCover").addEventListener(
+  "change",
+  function(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const preview = document.getElementById("coverPreview");
+
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+  }
+);
+
+
+// =====================================
+// COMPRESS COVER IMAGE
+// =====================================
+
+function compressImage(file) {
+
+  return new Promise((resolve, reject) => {
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+
+      const image = new Image();
+
+      image.onload = function() {
+
+        const canvas = document.createElement("canvas");
+
+        const maxWidth = 500;
+        const scale = Math.min(1, maxWidth / image.width);
+
+        canvas.width = image.width * scale;
+        canvas.height = image.height * scale;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        resolve(
+          canvas.toDataURL("image/jpeg", 0.70)
+        );
+      };
+
+      image.onerror = reject;
+      image.src = event.target.result;
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+
+  });
+}
+
+
+// =====================================
+// SAVE NEW BOOK
+// =====================================
+
+document.getElementById("bookForm").addEventListener(
+  "submit",
+  async function(event) {
+
+    event.preventDefault();
+
+    const status = document.getElementById("bookStatus");
+
+    status.textContent = "Saving your book...";
+
+    try {
+
+      const file = document.getElementById("bookCover").files[0];
+
+      let cover = "";
+
+      if (file) {
+        cover = await compressImage(file);
+      }
+
+      const platforms = Array.from(
+        document.querySelectorAll(
+          'input[name="platform"]:checked'
+        )
+      ).map(item => item.value);
+
+      const book = {
+
+        id: Date.now(),
+
+        title: document.getElementById("bookTitle").value,
+
+        category: document.getElementById("bookCategory").value,
+
+        description: document.getElementById("bookDescription").value,
+
+        audience: document.getElementById("bookAudience").value,
+
+        price: document.getElementById("bookPrice").value,
+
+        amazon: document.getElementById("amazonLink").value,
+
+        platforms: platforms,
+
+        cover: cover
+
+      };
+
+      books.push(book);
+
+      saveData();
+
+      updateDashboard();
+
+      this.reset();
+
+      document.getElementById("coverPreview").style.display = "none";
+
+      status.textContent = "✓ Your book has been saved successfully!";
+
+    } catch(error) {
+
+      status.textContent =
+        "Could not save this book. Your browser storage may be full.";
+
+    }
+
+  }
+);
+
+
+// =====================================
+// DISPLAY BOOKS
+// =====================================
+
+function renderBooks() {
+
+  const container = document.getElementById("bookList");
+
+  if (!books.length) {
+
+    container.innerHTML = `
+      <div class="empty-state">
+        <span>📚</span>
+        Your book collection is empty.
+        Add your first book above.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML = books.map(book => `
+
+    <div class="book-card">
+
+      ${
+        book.cover
+        ? `<img src="${book.cover}" alt="Book cover">`
+        : `<div class="empty-state">📖 No cover uploaded</div>`
+      }
+
+      <h4>${escapeHTML(book.title)}</h4>
+
+      <p>${escapeHTML(book.category)}</p>
+
+      <p>${escapeHTML(book.description.substring(0,100))}</p>
+
+      <a href="${safeAmazonLink(book.amazon)}"
+      target="_blank" rel="noopener noreferrer">
+        View on Amazon ↗
+      </a>
+
+      <br>
+
+      <button class="button light"
+      onclick="deleteBook(${book.id})">
+        Delete Book
+      </button>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+// =====================================
+// SAFE TEXT DISPLAY
+// =====================================
+
+function escapeHTML(value) {
+
+  return String(value || "").replace(/[&<>"']/g, function(char) {
+
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char];
+
+  });
+
+}
+
+function safeAmazonLink(value) {
+
+  try {
+
+    const url = new URL(value);
+
+    if (
+      url.protocol === "https:" &&
+      /(^|\.)amazon\.[a-z.]+$/i.test(url.hostname)
+    ) {
+      return url.href;
+    }
+
+  } catch(error) {}
+
+  return "#";
+
+}
+
+
+// =====================================
+// DELETE BOOK
+// =====================================
+
+function deleteBook(id) {
+
+  if (!confirm("Are you sure you want to delete this book?")) {
+    return;
+  }
+
+  books = books.filter(book => book.id !== id);
+
+  saveData();
+
+  updateDashboard();
+
+}
+
+
+// =====================================
+// BOOK DROPDOWNS
+// =====================================
+
+function updateBookDropdowns() {
+
+  const dropdowns = [
+    "audienceBook",
+    "contentBook",
+    "autoBook"
+  ];
+
+  dropdowns.forEach(id => {
+
+    const select = document.getElementById(id);
+
+    const previousValue = select.value;
+
+    select.innerHTML =
+      '<option value="">Select a book</option>';
+
+    books.forEach(book => {
+
+      const option = document.createElement("option");
+
+      option.value = book.id;
+
+      option.textContent = book.title;
+
+      select.appendChild(option);
+
+    });
+
+    if (books.some(book => String(book.id) === previousValue)) {
+      select.value = previousValue;
+    }
+
+  });
+
+}
+
+
+// =====================================
+// DASHBOARD STATISTICS
+// =====================================
+
+function updateDashboard() {
+
+  renderBooks();
+
+  updateBookDropdowns();
+
+  document.getElementById("bookCount").textContent =
+    books.length;
+
+  document.getElementById("contentCount").textContent =
+    contentHistory.length;
+
+  document.getElementById("planCount").textContent =
+    marketingPlans.length;
+
+  document.getElementById("analyticsBooks").textContent =
+    books.length;
+
+  document.getElementById("analyticsContent").textContent =
+    contentHistory.length;
+
+  document.getElementById("analyticsPlans").textContent =
+    marketingPlans.length;
+
+  renderCalendar();
+
+}
+
+
+// =====================================
+// FIND SELECTED BOOK
+// =====================================
+
+function getBook(id) {
+
+  return books.find(book => String(book.id) === String(id));
+
+}
+
+
+// =====================================
+// AI GENERATION ENGINE
+// =====================================
+
+async function generateWithAI(prompt, outputId, buttonId) {
+
+  const output = document.getElementById(outputId);
+
+  const button = buttonId
+    ? document.getElementById(buttonId)
+    : null;
+
+  output.textContent = "✨ Your AI assistant is working... Please wait.";
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Generating...";
+  }
+
+  try {
+
+    const response = await fetch(AI_ENDPOINT, {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        prompt: prompt
+      })
+
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "The AI service could not complete your request."
+      );
+    }
+
+    const result =
+      data.generatedContent ||
+      data.content ||
+      data.text;
+
+    if (!result) {
+      throw new Error("The AI returned an empty response.");
+    }
+
+    output.textContent = result;
+
+    return result;
+
+  } catch(error) {
+
+    output.textContent =
+      "⚠️ Could not generate content.\n\n" +
+      error.message +
+      "\n\nPlease try again later.";
+
+    return null;
+
+  } finally {
+
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Generate Again";
+    }
+
+  }
+
+}
+
+
+// =====================================
+// AUDIENCE INTELLIGENCE
+// =====================================
+
+async function generateAudience() {
+
+  const book = getBook(
+    document.getElementById("audienceBook").value
+  );
+
+  if (!book) {
+    alert("Please add and select a book first.");
+    return;
+  }
+
+  const goal = document.getElementById("audienceGoal").value;
+
+  const prompt = `
+You are an experienced book marketing strategist.
+
+Analyse this already published Amazon book.
+
+BOOK TITLE:
+${book.title}
+
+CATEGORY:
+${book.category}
+
+DESCRIPTION:
+${book.description}
+
+CURRENT TARGET AUDIENCE:
+${book.audience || "Not specified. Help identify suitable readers."}
+
+RESEARCH OBJECTIVE:
+${goal}
+
+Provide practical suggestions covering:
+
+1. Ideal reader groups.
+2. Their interests and needs.
+3. Problems this book may help address.
+4. Relevant topics and discussion ideas.
+5. Useful social media content opportunities.
+6. Appropriate Facebook, Instagram and Pinterest strategies.
+
+Do not invent research findings, verified statistics or real audience discussions.
+Clearly distinguish suggestions from verified research.
+Make the recommendations practical and specific to this book.
+`;
+
+  await generateWithAI(prompt, "audienceOutput");
+
+}
+
+
+// =====================================
+// CONTENT CREATOR
+// =====================================
+
+async function createContent() {
+
+  const book = getBook(
+    document.getElementById("contentBook").value
+  );
+
+  if (!book) {
+    alert("Please add and select a book first.");
+    return;
+  }
+
+  const platform =
+    document.getElementById("contentPlatform").value;
+
+  const style =
+    document.getElementById("contentStyle").value;
+
+  const instructions =
+    document.getElementById("contentInstructions").value;
+
+  const prompt = `
+You are Festus Smartbooks Marketing Copilot.
+
+Create excellent, natural and engaging book marketing content.
+
+BOOK TITLE:
+${book.title}
+
+BOOK CATEGORY:
+${book.category}
+
+BOOK DESCRIPTION:
+${book.description}
+
+TARGET AUDIENCE:
+${book.audience || "Identify suitable readers."}
+
+AMAZON PURCHASE LINK:
+${book.amazon}
+
+SOCIAL PLATFORM:
+${platform}
+
+CONTENT STYLE:
+${style}
+
+ADDITIONAL INSTRUCTIONS:
+${instructions || "Use your best marketing judgement."}
+
+IMPORTANT REQUIREMENTS:
+
+1. Make the content genuinely useful or entertaining.
+2. Avoid repeating the same sales message.
+3. Use natural human-sounding language.
+4. Relate the content to the book's subject.
+5. Include an occasional natural book recommendation.
+6. Include the Amazon purchase link where appropriate.
+7. Suggest suitable hashtags when relevant.
+8. Adapt formatting to the selected platform.
+9. Do not make false claims about the book.
+10. Create fresh content rather than generic advertisements.
+
+If All Platforms is selected, create separate versions for Facebook, Instagram and Pinterest.
+
+Return ready-to-use promotional content.
+`;
+
+  const result = await generateWithAI(
+    prompt,
+    "contentOutput",
+    "createButton"
+  );
+
+  if (result) {
+
+    contentHistory.push({
+      date: new Date().toISOString(),
+      book: book.title,
+      platform: platform,
+      content: result
+    });
+
+    saveData();
+
+    updateDashboard();
+
+  }
+
+}
+
+
+// =====================================
+// COPY GENERATED CONTENT
+// =====================================
+
+function copyContent() {
+
+  const text = document.getElementById("contentOutput").innerText;
+
+  if (!text || text.includes("will appear here")) {
+    alert("There is no generated content to copy yet.");
+    return;
+  }
+
+  navigator.clipboard.writeText(text)
+    .then(() => alert("Content copied successfully!"))
+    .catch(() => alert("Please select and copy the content manually."));
+
+}
+
+
+// =====================================
+// MARKETING PLAN
+// =====================================
+
+async function preparePlan() {
+
+  const book = getBook(
+    document.getElementById("autoBook").value
+  );
+
+  if (!book) {
+    alert("Please add and select a book first.");
+    return;
+  }
+
+  const frequency =
+    document.getElementById("frequency").value;
+
+  const platforms = [];
+
+  if (document.getElementById("autoFacebook").checked) {
+    platforms.push("Facebook");
+  }
+
+  if (document.getElementById("autoInstagram").checked) {
+    platforms.push("Instagram");
+  }
+
+  if (document.getElementById("autoPinterest").checked) {
+    platforms.push("Pinterest");
+  }
+
+  if (!platforms.length) {
+    alert("Please select at least one platform.");
+    return;
+  }
+
+  const prompt = `
+Act as an experienced social media book marketing strategist.
+
+Prepare a practical promotional schedule for this existing Amazon book.
+
+BOOK:
+${book.title}
+
+CATEGORY:
+${book.category}
+
+DESCRIPTION:
+${book.description}
+
+TARGET AUDIENCE:
+${book.audience || "Identify suitable readers."}
+
+PLATFORMS:
+${platforms.join(", ")}
+
+FREQUENCY:
+${frequency}
+
+Create a varied content plan including:
+- Educational posts.
+- Helpful tips.
+- Storytelling.
+- Questions and discussion starters.
+- Entertaining posts.
+- Occasional direct book promotions.
+
+Avoid repetitive sales messages.
+
+For each planned post provide:
+1. Suggested day.
+2. Platform.
+3. Content idea.
+4. Purpose of the post.
+
+Make the schedule realistic and useful.
+
+This is a planning document, not an instruction to publish automatically.
+`;
+
+  const result = await generateWithAI(
+    prompt,
+    "planOutput"
+  );
+
+  if (result) {
+
+    marketingPlans.push({
+      date: new Date().toISOString(),
+      book: book.title,
+      frequency: frequency,
+      platforms: platforms,
+      plan: result
+    });
+
+    saveData();
+
+    updateDashboard();
+
+  }
+
+}
+
+
+// =====================================
+// MARKETING CALENDAR
+// =====================================
+
+function renderCalendar() {
+
+  const container =
+    document.getElementById("calendarOutput");
+
+  if (!marketingPlans.length) {
+
+    container.innerHTML = `
+      <div class="empty-state">
+        <span>📅</span>
+        No marketing plans prepared yet.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML = marketingPlans.slice().reverse().map(plan => `
+
+    <div class="card">
+
+      <h3>${escapeHTML(plan.book)}</h3>
+
+      <p class="muted">
+        Prepared: ${new Date(plan.date).toLocaleDateString()}
+      </p>
+
+      <p class="muted">
+        Frequency: ${escapeHTML(plan.frequency)}
+      </p>
+
+      <p class="muted">
+        Platforms: ${escapeHTML(plan.platforms.join(", "))}
+      </p>
+
+      <button class="button light"
+      onclick="viewPlan(${marketingPlans.indexOf(plan)})">
+        View Marketing Plan
+      </button>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+function viewPlan(index) {
+
+  const plan = marketingPlans[index];
+
+  document.getElementById("planOutput").textContent =
+    plan.plan;
+
+  showPage(
+    "autopilot",
+    document.querySelector('[onclick*="autopilot"]')
+  );
+
+}
+
+
+// =====================================
+// INITIALISE DASHBOARD
+// =====================================
+
+updateDashboard();
+
+console.log(
+  "Festus Smartbooks Marketing Copilot is ready."
+);
+
+</script>
+
+</div>
+</main>
+</div>
+
+</body>
+  </html>
