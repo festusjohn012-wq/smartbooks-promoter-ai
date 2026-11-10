@@ -2529,11 +2529,10 @@ const button=document.querySelector(`button[onclick="generateTool('${type}')"]`)
         <h3>✨ SmartBook AI Result</h3>
         <span class="badge">AI GENERATED</span>
       </div>
-      <div class="output-text" id="\${resultId}">\${escapeHTML(result)}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
-        <button class="btn primary" onclick="copyResult('\${resultId}')">📋 Copy</button>
-        <button class="btn secondary" onclick="saveResult('\${resultId}','\${type}')">💾 Save</button>
-        <button class="btn light" onclick="downloadResult('\${resultId}')">⬇ Download TXT</button>
+      <div class="output-text" id="${resultId}">${escapeHTML(result)}</div>
+<button class="btn primary" onclick="copyResult('${resultId}')">📋 Copy</button>
+<button class="btn secondary" onclick="saveResult('${resultId}','${type}')">💾 Save</button>
+<button class="btn light" onclick="downloadResult('${resultId}')">⬇ Download TXT</button>
       </div>`;
     box.classList.add("show");
 
