@@ -2,6 +2,14 @@ export default {
   async fetch(request, env) {
 
     const url = new URL(request.url);
+    if (url.pathname === "/debug-config") {
+  return Response.json({
+    facebook_app_id_found: !!env.FACEBOOK_APP_ID,
+    facebook_app_id_length: env.FACEBOOK_APP_ID?.length || 0,
+    facebook_secret_found: !!env.FACEBOOK_APP_SECRET,
+    allowed_user_id_found: !!env.FACEBOOK_ALLOWED_USER_ID
+  });
+    }
     // Facebook Login
 if (url.pathname === "/auth/facebook") {
   const state = crypto.randomUUID();
