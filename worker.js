@@ -58,7 +58,82 @@ if (url.pathname === "/test-kv") {
         facebook: "setup_pending"
       });
     }
+// Facebook OAuth Callback
+if (url.pathname === "/auth/facebook/callback") {
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const savedState = await env.FB_TOKENS.get("oauth_state");
 
+  if (!code || !state || state !== savedState) {
+    return new Response("Invalid Facebook login session.", {
+      status: 400
+    });
+  }
+
+  await env.FB_TOKENS.delete("oauth_state");
+
+  try {
+    const redirectUri =
+      "https://smartbooks-promoter-ai.festusjohn012.workers.dev/auth/facebook/callback";
+
+    const tokenUrl = new URL(
+      "https://graph.facebook.com/v26.0/oauth/access_token"
+    );
+
+    tokenUrl.searchParams.set("client_id", env.FACEBOOK_APP_ID);
+    tokenUrl.searchParams.set("client_secret", env.FACEBOOK_APP_SECRET);
+    tokenUrl.searchParams.set("redirect_uri", redirectUri);
+    tokenUrl.searchParams.set("code", code);
+
+    const tokenResponse = await fetch(tokenUrl);
+    const tokenData = await tokenResponse.json();
+
+    if (!tokenData.access_token) {
+      return new Response("Facebook token exchange failed.", {
+        status: 400
+      });
+    }
+
+    const profileUrl = new URL(
+      "https://graph.facebook.com/v26.0/me"
+    );
+
+    profileUrl.searchParams.set("fields", "id,name");
+    profileUrl.searchParams.set("access_token", tokenData.access_token);
+
+    const profileResponse = await fetch(profileUrl);
+    const profile = await profileResponse.json();
+
+    if (
+      !profile.id ||
+      profile.id !== env.FACEBOOK_ALLOWED_USER_ID
+    ) {
+      return new Response("Facebook account not authorized.", {
+        status: 403
+      });
+    }
+
+    await env.FB_TOKENS.put(
+      "facebook_user_token",
+      JSON.stringify({
+        access_token: tokenData.access_token,
+        user_id: profile.id,
+        name: profile.name,
+        expires_in: tokenData.expires_in || null
+      })
+    );
+
+    return new Response(
+      "Facebook connected successfully! You can close this page.",
+      { status: 200 }
+    );
+
+  } catch (error) {
+    return new Response("Facebook connection failed. Please try again.", {
+      status: 500
+    });
+  }
+}
     // Serve the existing website files
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);
