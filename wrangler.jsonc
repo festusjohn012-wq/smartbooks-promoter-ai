@@ -7,5 +7,11 @@
     "directory": ".",
     "binding": "ASSETS",
     "run_worker_first": ["/auth/*", "/api/*"]
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "FB_TOKENS",
+      "id": "7eefc947c1ae421d94a79ba473d8652f"
+    }
+  ]
 }
