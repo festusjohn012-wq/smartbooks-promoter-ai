@@ -213,6 +213,35 @@ if (url.pathname === "/auth/facebook/callback") {
     });
   }
 }
+    // FACEBOOK CONNECTION STATUS
+if (url.pathname === "/api/facebook/status" && request.method === "GET") {
+  try {
+    const savedToken = await env.FB_TOKENS.get("facebook_user_token");
+
+    if (!savedToken) {
+      return Response.json(
+        { connected: false },
+        { headers: corsHeaders }
+      );
+    }
+
+    const account = JSON.parse(savedToken);
+
+    return Response.json(
+      {
+        connected: true,
+        name: account.name || "Facebook User"
+      },
+      { headers: corsHeaders }
+    );
+
+  } catch (error) {
+    return Response.json(
+      { connected: false, error: "Unable to check Facebook connection." },
+      { status: 500, headers: corsHeaders }
+    );
+  }
+      }
     // Serve the existing website files
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);
