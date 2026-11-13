@@ -1,5 +1,17 @@
 export default {
   async fetch(request, env) {
+        const corsHeaders = {
+      "Access-Control-Allow-Origin": "https://smartbooks-promoter-ai.pages.dev",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders
+      });
+    }
 
     const url = new URL(request.url);
     if (url.pathname === "/debug-config") {
@@ -66,6 +78,65 @@ if (url.pathname === "/test-kv") {
         facebook: "setup_pending"
       });
     }
+    // AI CONTENT GENERATION
+if (url.pathname === "/api/generate" && request.method === "POST") {
+  try {
+    if (!env.GEMINI_API_KEY) {
+      throw new Error("Gemini API key is not configured.");
+    }
+
+    const body = await request.json();
+    const prompt = body.prompt;
+
+    if (!prompt || typeof prompt !== "string") {
+      return Response.json(
+        { error: "Please provide a valid prompt." },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    const aiResponse = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": env.GEMINI_API_KEY
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{ text: prompt }]
+          }]
+        })
+      }
+    );
+
+    const aiData = await aiResponse.json();
+
+    if (!aiResponse.ok) {
+      return Response.json(
+        { error: aiData.error?.message || "Gemini generation failed." },
+        { status: aiResponse.status, headers: corsHeaders }
+      );
+    }
+
+    const generatedContent =
+      aiData.candidates?.[0]?.content?.parts
+        ?.map(part => part.text || "")
+        .join("") || "";
+
+    return Response.json(
+      { success: true, generatedContent },
+      { headers: corsHeaders }
+    );
+
+  } catch (error) {
+    return Response.json(
+      { error: error.message || "AI generation failed." },
+      { status: 500, headers: corsHeaders }
+    );
+  }
+      }
 // Facebook OAuth Callback
 if (url.pathname === "/auth/facebook/callback") {
   const code = url.searchParams.get("code");
