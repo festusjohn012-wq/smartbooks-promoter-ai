@@ -2318,16 +2318,25 @@ async function checkFacebookConnection() {
   if (!status) return;
 
   try {
-    const response = await fetch(
-      "https://smartbooks-promoter-ai.festusjohn012.workers.dev/api/facebook/status"
-    );
+    const baseURL =
+      "https://smartbooks-promoter-ai.festusjohn012.workers.dev";
 
+    const response = await fetch(baseURL + "/api/facebook/status");
     const data = await response.json();
 
-    if (data.connected) {
-      status.textContent = "Connected: " + data.name;
-    } else {
+    if (!data.connected) {
       status.textContent = "Not Connected";
+      return;
+    }
+
+    status.textContent = "Connected: " + data.name;
+
+    const pagesResponse = await fetch(baseURL + "/api/facebook/pages");
+    const pagesData = await pagesResponse.json();
+
+    if (pagesData.success && pagesData.pages.length > 0) {
+      status.textContent +=
+        " | Page: " + pagesData.pages[0].name;
     }
 
   } catch (error) {
