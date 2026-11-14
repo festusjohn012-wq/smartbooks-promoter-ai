@@ -228,12 +228,13 @@ if (url.pathname === "/api/facebook/status" && request.method === "GET") {
     const account = JSON.parse(savedToken);
 
     return Response.json(
-      {
-        connected: true,
-        name: account.name || "Facebook User"
-      },
-      { headers: corsHeaders }
-    );
+  {
+    connected: true,
+    name: account.name || "Facebook User",
+    user_id: account.user_id
+  },
+  { headers: corsHeaders }
+);
 
   } catch (error) {
     return Response.json(
