@@ -45,7 +45,7 @@ if (url.pathname === "/auth/facebook") {
   loginUrl.searchParams.set("response_type", "code");
   loginUrl.searchParams.set(
     "scope",
-    "public_profile,pages_show_list"
+    "public_profile,pages_show_list,pages_read_engagement,pages_manage_posts"
   );
 
   return Response.redirect(loginUrl.toString(), 302);
