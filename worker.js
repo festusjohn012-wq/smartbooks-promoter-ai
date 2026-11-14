@@ -220,7 +220,7 @@ if (url.pathname === "/api/facebook/status" && request.method === "GET") {
 
     if (!savedToken) {
       return Response.json(
-        { connected: false },
+        { connected by: false },
         { headers: corsHeaders }
       );
     }
@@ -239,6 +239,72 @@ if (url.pathname === "/api/facebook/status" && request.method === "GET") {
   } catch (error) {
     return Response.json(
       { connected: false, error: "Unable to check Facebook connection." },
+      { status: 500, headers: corsHeaders }
+    );
+  }
+      }
+    // FACEBOOK PAGE DETECTION
+if (url.pathname === "/api/facebook/pages" && request.method === "GET") {
+  try {
+    const savedToken = await env.FB_TOKENS.get("facebook_user_token");
+
+    if (!savedToken) {
+      return Response.json(
+        { success: false, error: "Facebook is not connected." },
+        { status: 401, headers: corsHeaders }
+      );
+    }
+
+    const account = JSON.parse(savedToken);
+
+    const pagesUrl = new URL("https://graph.facebook.com/me/accounts");
+
+    pagesUrl.searchParams.set("fields", "id,name,access_token");
+    pagesUrl.searchParams.set("access_token", account.access_token);
+
+    const pagesResponse = await fetch(pagesUrl);
+    const pagesData = await pagesResponse.json();
+
+    if (!pagesResponse.ok) {
+      return Response.json(
+        {
+          success: false,
+          error: pagesData.error?.message || "Facebook Page detection failed."
+        },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    const pages = pagesData.data || [];
+
+    for (const page of pages) {
+      await env.FB_TOKENS.put(
+        "facebook_page_" + page.id,
+        JSON.stringify({
+          id: page.id,
+          name: page.name,
+          access_token: page.access_token
+        })
+      );
+    }
+
+    return Response.json(
+      {
+        success: true,
+        pages: pages.map(page => ({
+          id: page.id,
+          name: page.name
+        }))
+      },
+      { headers: corsHeaders }
+    );
+
+  } catch (error) {
+    return Response.json(
+      {
+        success: false,
+        error: "Facebook Page detection failed."
+      },
       { status: 500, headers: corsHeaders }
     );
   }
