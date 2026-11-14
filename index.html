@@ -1647,6 +1647,60 @@ button:disabled{opacity:.65;cursor:wait;transform:none!important;box-shadow:none
 </div>
 
 <button class="btn primary" onclick="generateTool('facebook')">📘 Generate Facebook Post</button>
+   <!-- FACEBOOK PAGE CONNECTION AND PUBLISHING -->
+
+<div class="card" style="margin-top:20px;border:1px solid #dce3f5">
+
+<h3 style="margin-bottom:12px">📘 Facebook Page Publishing</h3>
+
+<p id="fbConnectionStatus" style="font-size:12px;color:var(--muted)">
+Facebook connection not checked yet.
+</p>
+
+<button class="btn primary" onclick="connectFacebook()">
+Connect Facebook Account
+</button>
+
+<button class="btn secondary" onclick="loadFacebookPages()">
+🔄 Load My Facebook Pages
+</button>
+
+<div class="field" style="margin-top:15px">
+<label>Select Facebook Page</label>
+<select id="fbPageSelect">
+<option value="">Load your Facebook Pages first</option>
+</select>
+</div>
+
+<div class="field">
+<label>Review Your Facebook Post</label>
+<textarea id="facebookPublishText"
+placeholder="Generate a post above or write your Facebook post here..."
+style="min-height:150px"></textarea>
+</div>
+
+<div class="field">
+<label>Book Cover Image (Optional)</label>
+<input type="file" id="facebookImageFile" accept="image/jpeg,image/png">
+</div>
+
+<button class="btn secondary" onclick="loadGeneratedFacebookPost()">
+📋 Use Generated Facebook Post
+</button>
+
+<button class="btn primary" onclick="publishFacebookPost()">
+🚀 Publish Approved Post
+</button>
+
+<p style="font-size:10px;color:var(--muted);margin-top:10px">
+Your post will only be published when you manually press the Publish button.
+</p>
+
+<div id="facebookPublishStatus" style="margin-top:12px;font-size:12px"></div>
+
+</div>
+
+<!-- END FACEBOOK PUBLISHING PANEL -->
 
 <div class="output" id="facebookOutput"></div>
 
