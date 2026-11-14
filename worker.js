@@ -220,7 +220,7 @@ if (url.pathname === "/api/facebook/status" && request.method === "GET") {
 
     if (!savedToken) {
       return Response.json(
-        { connected by: false },
+        { connected: false },
         { headers: corsHeaders }
       );
     }
