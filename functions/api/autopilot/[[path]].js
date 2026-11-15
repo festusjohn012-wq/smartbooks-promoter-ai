@@ -189,7 +189,7 @@ export async function onRequest(context) {
     if (request.headers.get("Content-Type")) {
       headers.set("Content-Type", request.headers.get("Content-Type"));
     }
-
+      headers.set("Origin", FRONTEND);
     const options = {
       method: request.method,
       headers
