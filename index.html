@@ -2965,6 +2965,50 @@ async function scheduleAutopilotPost() {
 }
 
 window.scheduleAutopilotPost = scheduleAutopilotPost;
+   /* FACEBOOK AUTOPILOT PAUSE AND RESUME */
+
+async function toggleAutopilot(paused) {
+
+  const status = document.getElementById("fbAutoStatus");
+
+  status.textContent = paused
+    ? "Pausing automatic publishing..."
+    : "Resuming automatic publishing...";
+
+  try {
+
+    const response = await fetch("/api/autopilot/pause", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ paused })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Could not update publishing settings.");
+    }
+
+    status.textContent = "✅ " + result.message;
+
+    toast(result.message);
+
+    if (typeof loadAutopilotQueue === "function") {
+      loadAutopilotQueue();
+    }
+
+  } catch (error) {
+
+    status.textContent = "⚠️ " + error.message;
+    toast("Autopilot setting could not be updated.");
+
+  }
+}
+
+window.toggleAutopilot = toggleAutopilot;
 window.generateTool = generateTool;
 /* COPY AND DOWNLOAD */
 
