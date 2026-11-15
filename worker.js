@@ -448,15 +448,24 @@ export default {
 
         // Confirm that this page belongs to the connected account.
         const savedPage = await env.FB_TOKENS.get(
-          "facebook_page_" + pageId
-        );
+  "facebook_page_" + pageId
+);
 
-        if (!savedPage) {
-          return json({
-            success: false,
-            message: "This Page is not connected. Please reload your Pages."
-          }, 403);
-        }
+if (!savedPage) {
+  return json({
+    success: false,
+    message: "This Facebook Page is not connected. Reload your Pages."
+  }, 403);
+}
+
+const page = JSON.parse(savedPage);
+
+if (!page.access_token) {
+  return json({
+    success: false,
+    message: "Facebook Page token unavailable. Reconnect Facebook."
+  }, 401);
+}
 
         const page = JSON.parse(savedPage);
 
