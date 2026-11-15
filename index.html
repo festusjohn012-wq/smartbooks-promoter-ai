@@ -3118,7 +3118,41 @@ el.addEventListener("click",()=>{
 el.parentElement.classList.toggle("open");
 });
 });
-/* FACEBOOK PAGE CONNECTION AND MANUAL PUBLISHING */
+
+/* INITIALISE */
+
+function initialise(){
+
+if(data.settings.publisher){
+document.getElementById("publisherName").value=data.settings.publisher;
+}
+
+if(data.settings.business){
+document.getElementById("businessName").value=data.settings.business;
+}
+
+document.getElementById("aiEndpoint").value=data.settings.endpoint||DEFAULT_AI_ENDPOINT;
+
+renderBooks();
+renderCompetitors();
+updateDashboard();
+
+drawChart("activityChart");
+
+}
+
+initialise()
+
+window.addEventListener("resize",()=>{
+drawChart("activityChart");
+if(document.getElementById("analytics").classList.contains("active")){
+drawChart("analyticsChart");
+}
+});
+
+</script>
+<script>
+   /* FACEBOOK PAGE CONNECTION AND MANUAL PUBLISHING */
 
 const FACEBOOK_WORKER = "https://smartbooks-promoter-ai.festusjohn012.workers.dev";
 
@@ -3274,40 +3308,6 @@ window.loadGeneratedFacebookPost = loadGeneratedFacebookPost;
 window.publishFacebookPost = publishFacebookPost;
 
 /* END FACEBOOK PUBLISHING */
-/* INITIALISE */
-
-function initialise(){
-
-if(data.settings.publisher){
-document.getElementById("publisherName").value=data.settings.publisher;
-}
-
-if(data.settings.business){
-document.getElementById("businessName").value=data.settings.business;
-}
-
-document.getElementById("aiEndpoint").value=data.settings.endpoint||DEFAULT_AI_ENDPOINT;
-
-renderBooks();
-renderCompetitors();
-updateDashboard();
-
-drawChart("activityChart");
-
-}
-
-initialise()
-
-window.addEventListener("resize",()=>{
-drawChart("activityChart");
-if(document.getElementById("analytics").classList.contains("active")){
-drawChart("analyticsChart");
-}
-});
-
-</script>
-<script>
-   alert("Second script is working!");
 /* SMARTBOOK NAVIGATION REPAIR */
 
 document.addEventListener("click", function(event) {
