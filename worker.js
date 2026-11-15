@@ -848,8 +848,6 @@ if (!page.access_token) {
       status: 200,
       headers: corsHeaders
     });
-  }
-};
   },
 
   // AUTOMATIC FACEBOOK PUBLISHING ENGINE
