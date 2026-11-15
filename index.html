@@ -3189,11 +3189,14 @@ async function loadFacebookPages() {
       return;
     }
 
-    select.innerHTML =
-      '<option value="">Choose a Facebook Page</option>' +
-      pagesData.pages.map(page =>
-        `<option value="${escapeHTML(page.id)}">${escapeHTML(page.name)}</option>`
-      ).join("");
+    select.innerHTML = '<option value="">Choose a Facebook Page</option>';
+
+pagesData.pages.forEach(page => {
+  const option = document.createElement("option");
+  option.value = page.id;
+  option.textContent = page.name;
+  select.appendChild(option);
+});
 
     if (pagesData.pages.length === 1) {
       select.value = pagesData.pages[0].id;
