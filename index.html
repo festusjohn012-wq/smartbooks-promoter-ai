@@ -2740,6 +2740,66 @@ const button=document.querySelector(`button[onclick="generateTool('${type}')"]`)
     if(button){button.disabled=false;button.textContent=button.dataset.originalText||"Generate";}
   }
 }
+   /* FACEBOOK AUTOPILOT AI GENERATION */
+
+async function generateAutopilotPost() {
+
+  const title = document.getElementById("fbAutoBookTitle").value.trim();
+  const amazonLink = document.getElementById("fbAutoBookLink").value.trim();
+  const audience = document.getElementById("fbAutoAudience").value;
+  const style = document.getElementById("fbAutoStyle").value;
+
+  const messageBox = document.getElementById("fbAutoMessage");
+  const statusBox = document.getElementById("fbAutoStatus");
+
+  if (!title) {
+    toast("Please enter your book title.");
+    return;
+  }
+
+  statusBox.textContent = "✨ SmartBook AI is creating your Facebook post...";
+
+  try {
+
+    const result = await generateWithAI({
+      title,
+      description: "",
+      niche: "Book promotion",
+      platform: "Facebook",
+      audience,
+      amazonLink,
+      contentType: "Facebook automatic publishing promotion",
+
+      instructions: `Create an engaging Facebook promotional post for the book "${title}".
+
+Target audience: ${audience}.
+Writing style: ${style}.
+Book link: ${amazonLink || "No link supplied"}.
+
+Include an attention-grabbing opening, reader benefits, natural storytelling, an authentic call to action and relevant hashtags.
+
+Make the post ready for Facebook publication.
+Do not invent reviews, awards, results or false claims.`
+    });
+
+    messageBox.value = result;
+
+    statusBox.textContent = "✅ Post generated successfully. Review and edit it before scheduling.";
+
+    if (typeof recordActivity === "function") {
+      data.counts.marketing++;
+      recordActivity("Generated Facebook Autopilot post", "marketing");
+      persist();
+    }
+
+  } catch (error) {
+
+    statusBox.textContent = "⚠️ " + (error.message || "Post generation failed.");
+
+  }
+}
+
+window.generateAutopilotPost = generateAutopilotPost;
 window.generateTool = generateTool;
 /* COPY AND DOWNLOAD */
 
