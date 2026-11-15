@@ -2870,6 +2870,101 @@ async function loginAutopilot() {
 }
 
 window.loginAutopilot = loginAutopilot;
+   /* FACEBOOK AUTOPILOT SCHEDULING */
+
+async function scheduleAutopilotPost() {
+
+  const pageId = document.getElementById("fbPageSelect").value;
+  const message = document.getElementById("fbAutoMessage").value.trim();
+  const date = document.getElementById("fbAutoDate").value;
+  const time = document.getElementById("fbAutoTime").value;
+  const file = document.getElementById("fbAutoImage").files[0];
+  const status = document.getElementById("fbAutoStatus");
+
+  if (!pageId) {
+    status.textContent = "Please select your Facebook Page in Facebook Marketing.";
+    return;
+  }
+
+  if (!message) {
+    status.textContent = "Please generate or enter your Facebook post.";
+    return;
+  }
+
+  if (!date || !time) {
+    status.textContent = "Please select a publishing date and time.";
+    return;
+  }
+
+  const scheduledAt = new Date(`${date}T${time}`);
+
+  if (isNaN(scheduledAt.getTime()) ||
+      scheduledAt.getTime() < Date.now() + 60000) {
+    status.textContent = "Choose a time at least one minute in the future.";
+    return;
+  }
+
+  if (file && !["image/jpeg", "image/png"].includes(file.type)) {
+    status.textContent = "Please select a JPG or PNG image.";
+    return;
+  }
+
+  if (file && file.size > 8 * 1024 * 1024) {
+    status.textContent = "Image must be smaller than 8 MB.";
+    return;
+  }
+
+  if (!confirm("Approve this post for automatic Facebook publishing?")) {
+    return;
+  }
+
+  status.textContent = "Adding your approved post to the publishing queue...";
+
+  try {
+
+    let imageData = "";
+
+    if (file) {
+      imageData = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Could not read image."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const response = await fetch("/api/autopilot/schedule", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        pageId,
+        message,
+        scheduledAt: scheduledAt.toISOString(),
+        imageData
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Scheduling failed.");
+    }
+
+    status.textContent = "✅ " + result.message;
+
+    if (typeof loadAutopilotQueue === "function") {
+      loadAutopilotQueue();
+    }
+
+  } catch (error) {
+    status.textContent = "⚠️ " + error.message;
+  }
+}
+
+window.scheduleAutopilotPost = scheduleAutopilotPost;
 window.generateTool = generateTool;
 /* COPY AND DOWNLOAD */
 
