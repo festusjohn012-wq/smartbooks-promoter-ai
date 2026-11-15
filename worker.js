@@ -595,7 +595,11 @@ if (!page.access_token) {
       request.method === "POST"
     ) {
       try {
-        if (request.headers.get("Origin") !== FRONTEND) {
+        if (
+  !env.AUTOPILOT_SECRET ||
+  request.headers.get("Authorization") !==
+    "Bearer " + env.AUTOPILOT_SECRET
+) {
           return json({
             success: false,
             message: "Unauthorized scheduling request."
