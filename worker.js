@@ -852,3 +852,144 @@ if (!page.access_token) {
     });
   }
 };
+  },
+
+  // AUTOMATIC FACEBOOK PUBLISHING ENGINE
+  async scheduled(controller, env, ctx) {
+    try {
+      if (!env.FB_TOKENS) return;
+
+      const paused =
+        (await env.FB_TOKENS.get("autopost_paused")) === "true";
+
+      if (paused) return;
+
+      const result = await env.FB_TOKENS.list({
+        prefix: "autopost:",
+        limit: 1000
+      });
+
+      for (const item of result.keys) {
+        const key = item.name;
+        const saved = await env.FB_TOKENS.get(key);
+
+        if (!saved) continue;
+
+        const post = JSON.parse(saved);
+
+        if (
+          post.status !== "pending" ||
+          post.scheduledAt > Date.now()
+        ) continue;
+
+        // Mark before publishing to reduce duplicate attempts.
+        post.status = "publishing";
+        post.attemptedAt = Date.now();
+
+        await env.FB_TOKENS.put(key, JSON.stringify(post));
+
+        try {
+          const savedPage = await env.FB_TOKENS.get(
+            "facebook_page_" + post.pageId
+          );
+
+          if (!savedPage) {
+            throw new Error("Facebook Page is no longer connected.");
+          }
+
+          const page = JSON.parse(savedPage);
+
+          if (!page.access_token) {
+            throw new Error("Facebook Page access token is missing.");
+          }
+
+          let publishUrl;
+          const form = new FormData();
+
+          form.append("access_token", page.access_token);
+
+          if (post.imageData || post.imageUrl) {
+            publishUrl =
+              "https://graph.facebook.com/v26.0/" +
+              post.pageId + "/photos";
+
+            form.append("caption", post.message);
+
+            if (post.imageData) {
+              const match = String(post.imageData).match(
+                /^data:image\/(jpeg|jpg|png);base64,([A-Za-z0-9+/=]+)$/
+              );
+
+              if (!match) {
+                throw new Error("Scheduled image is invalid.");
+              }
+
+              const binary = atob(match[2]);
+              const bytes = new Uint8Array(binary.length);
+
+              for (let i = 0; i < binary.length; i++) {
+                bytes[i] = binary.charCodeAt(i);
+              }
+
+              const mime =
+                match[1] === "jpg" ? "image/jpeg" :
+                "image/" + match[1];
+
+              const blob = new Blob([bytes], { type: mime });
+
+              form.append(
+                "source",
+                blob,
+                "scheduled-image." + match[1]
+              );
+
+            } else {
+              if (!post.imageUrl.startsWith("https://")) {
+                throw new Error("Scheduled image URL is invalid.");
+              }
+
+              form.append("url", post.imageUrl);
+            }
+
+          } else {
+            publishUrl =
+              "https://graph.facebook.com/v26.0/" +
+              post.pageId + "/feed";
+
+            form.append("message", post.message);
+          }
+
+          const response = await fetch(publishUrl, {
+            method: "POST",
+            body: form
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.error) {
+            throw new Error(
+              data.error?.message ||
+              "Facebook could not publish the scheduled post."
+            );
+          }
+
+          post.status = "published";
+          post.publishedAt = Date.now();
+          post.facebookPostId = data.id || null;
+          post.result = data;
+          post.error = null;
+
+        } catch (error) {
+          post.status = "failed";
+          post.error = error.message || "Automatic publishing failed.";
+          post.failedAt = Date.now();
+        }
+
+        await env.FB_TOKENS.put(key, JSON.stringify(post));
+      }
+
+    } catch (error) {
+      console.error("Automatic publishing engine error:", error);
+    }
+  }
+};
