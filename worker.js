@@ -578,7 +578,260 @@ export default {
         }, 500);
       }
     }
+    // APPROVAL-FIRST AUTOMATIC PUBLISHING: QUEUE API
 
+    // SCHEDULE AN APPROVED POST
+    if (
+      path === "/api/autopilot/schedule" &&
+      request.method === "POST"
+    ) {
+      try {
+        if (request.headers.get("Origin") !== FRONTEND) {
+          return json({
+            success: false,
+            message: "Unauthorized scheduling request."
+          }, 403);
+        }
+
+        if (!env.FB_TOKENS) {
+          throw new Error("Publishing storage is unavailable.");
+        }
+
+        const body = await request.json();
+
+        const pageId = String(body.pageId || "").trim();
+        const message = String(body.message || "").trim();
+        const imageData = body.imageData || "";
+        const imageUrl = String(body.imageUrl || "").trim();
+        const scheduledAt = new Date(body.scheduledAt).getTime();
+
+        if (!/^\d+$/.test(pageId)) {
+          return json({
+            success: false,
+            message: "Please select a valid Facebook Page."
+          }, 400);
+        }
+
+        if (!message || message.length > 5000) {
+          return json({
+            success: false,
+            message: "Please enter valid post text (maximum 5,000 characters)."
+          }, 400);
+        }
+
+        if (!Number.isFinite(scheduledAt) || scheduledAt < Date.now() + 60000) {
+          return json({
+            success: false,
+            message: "Choose a publishing time at least one minute in the future."
+          }, 400);
+        }
+
+        const savedPage = await env.FB_TOKENS.get(
+          "facebook_page_" + pageId
+        );
+
+        if (!savedPage) {
+          return json({
+            success: false,
+            message: "This Facebook Page is not connected. Reload your Pages."
+          }, 403);
+        }
+
+        if (imageData) {
+          const match = String(imageData).match(
+            /^data:image\/(jpeg|jpg|png);base64,([A-Za-z0-9+/=]+)$/
+          );
+
+          if (!match || atob(match[2]).length > 8 * 1024 * 1024) {
+            return json({
+              success: false,
+              message: "Please use a valid JPG or PNG image smaller than 8 MB."
+            }, 400);
+          }
+        } else if (imageUrl && !imageUrl.startsWith("https://")) {
+          return json({
+            success: false,
+            message: "The image URL must use HTTPS."
+          }, 400);
+        }
+
+        const id = crypto.randomUUID();
+
+        const post = {
+          id,
+          pageId,
+          message,
+          imageData,
+          imageUrl,
+          scheduledAt,
+          status: "pending",
+          createdAt: Date.now(),
+          publishedAt: null,
+          error: null
+        };
+
+        await env.FB_TOKENS.put(
+          "autopost:" + id,
+          JSON.stringify(post)
+        );
+
+        return json({
+          success: true,
+          message: "Your approved post has been added to the publishing queue.",
+          post
+        });
+
+      } catch (error) {
+        return json({
+          success: false,
+          message: error.message || "Unable to schedule this post."
+        }, 500);
+      }
+    }
+
+    // VIEW THE PUBLISHING QUEUE
+    if (
+      path === "/api/autopilot/queue" &&
+      request.method === "GET"
+    ) {
+      try {
+        if (request.headers.get("Origin") !== FRONTEND) {
+          return json({
+            success: false,
+            message: "Unauthorized request."
+          }, 403);
+        }
+
+        const result = await env.FB_TOKENS.list({
+          prefix: "autopost:",
+          limit: 1000
+        });
+
+        const posts = [];
+
+        for (const item of result.keys) {
+          const saved = await env.FB_TOKENS.get(item.name);
+
+          if (saved) {
+            posts.push(JSON.parse(saved));
+          }
+        }
+
+        posts.sort((a, b) => a.scheduledAt - b.scheduledAt);
+
+        const paused =
+          (await env.FB_TOKENS.get("autopost_paused")) === "true";
+
+        return json({
+          success: true,
+          paused,
+          posts
+        });
+
+      } catch (error) {
+        return json({
+          success: false,
+          message: "Unable to load the publishing queue."
+        }, 500);
+      }
+    }
+
+    // CANCEL A PENDING POST
+    if (
+      path === "/api/autopilot/cancel" &&
+      request.method === "POST"
+    ) {
+      try {
+        if (request.headers.get("Origin") !== FRONTEND) {
+          return json({
+            success: false,
+            message: "Unauthorized request."
+          }, 403);
+        }
+
+        const body = await request.json();
+        const id = String(body.id || "").trim();
+
+        if (!id) {
+          return json({
+            success: false,
+            message: "Missing post ID."
+          }, 400);
+        }
+
+        const key = "autopost:" + id;
+        const saved = await env.FB_TOKENS.get(key);
+
+        if (!saved) {
+          return json({
+            success: false,
+            message: "Scheduled post not found."
+          }, 404);
+        }
+
+        const post = JSON.parse(saved);
+
+        if (post.status !== "pending") {
+          return json({
+            success: false,
+            message: "Only pending posts can be cancelled."
+          }, 400);
+        }
+
+        post.status = "cancelled";
+        post.cancelledAt = Date.now();
+
+        await env.FB_TOKENS.put(key, JSON.stringify(post));
+
+        return json({
+          success: true,
+          message: "Scheduled post cancelled."
+        });
+
+      } catch (error) {
+        return json({
+          success: false,
+          message: "Unable to cancel this post."
+        }, 500);
+      }
+    }
+
+    // PAUSE OR RESUME AUTOMATIC PUBLISHING
+    if (
+      path === "/api/autopilot/pause" &&
+      request.method === "POST"
+    ) {
+      try {
+        if (request.headers.get("Origin") !== FRONTEND) {
+          return json({
+            success: false,
+            message: "Unauthorized request."
+          }, 403);
+        }
+
+        const body = await request.json();
+        const paused = body.paused === true;
+
+        await env.FB_TOKENS.put(
+          "autopost_paused",
+          paused ? "true" : "false"
+        );
+
+        return json({
+          success: true,
+          paused,
+          message: paused
+            ? "Automatic publishing paused."
+            : "Automatic publishing resumed."
+        });
+
+      } catch (error) {
+        return json({
+          success: false,
+          message: "Unable to update publishing settings."
+        }, 500);
+      }
+                      }
     // SERVE EXISTING WEBSITE FILES
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);
