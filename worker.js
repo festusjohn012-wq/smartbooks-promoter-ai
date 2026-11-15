@@ -466,16 +466,6 @@ if (!page.access_token) {
     message: "Facebook Page token unavailable. Reconnect Facebook."
   }, 401);
 }
-
-        const page = JSON.parse(savedPage);
-
-        if (!page.access_token) {
-          return json({
-            success: false,
-            message: "The Facebook Page token is unavailable. Reconnect Facebook."
-          }, 401);
-        }
-
         let publishUrl;
         let form = new FormData();
 
