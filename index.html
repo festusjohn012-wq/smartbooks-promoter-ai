@@ -3118,161 +3118,9 @@ el.addEventListener("click",()=>{
 el.parentElement.classList.toggle("open");
 });
 });
-/* FACEBOOK PAGE CONNECTION AND MANUAL PUBLISHING */
-   alert("SmartBook Facebook test is running!");
+alert("SmartBook Facebook test is running!");
 console.log("FACEBOOK JAVASCRIPT LOADED");
-   document.getElementById("fbConnectionStatus").textContent = "Facebook JavaScript loaded successfully.";
-const FACEBOOK_WORKER = "https://smartbooks-promoter-ai.festusjohn012.workers.dev";
-
-function connectFacebook() {
-  window.location.href = FACEBOOK_WORKER + "/auth/facebook";
-}
-
-async function loadFacebookPages() {
-  const status = document.getElementById("fbConnectionStatus");
-  const select = document.getElementById("fbPageSelect");
-  const publishStatus = document.getElementById("facebookPublishStatus");
-
-  status.textContent = "Checking Facebook connection...";
-  publishStatus.textContent = "";
-
-  try {
-    const response = await fetch(FACEBOOK_WORKER + "/api/facebook/status");
-    const account = await response.json();
-
-    if (!response.ok || !account.connected) {
-      status.textContent = "Facebook is not connected. Tap Connect Facebook Account.";
-      select.innerHTML = '<option value="">Connect Facebook first</option>';
-      return;
-    }
-
-    status.textContent = "Connected as " + (account.name || "Facebook user");
-
-    const pagesResponse = await fetch(FACEBOOK_WORKER + "/api/facebook/pages");
-    const pagesData = await pagesResponse.json();
-
-    if (!pagesResponse.ok || !pagesData.success || !pagesData.pages?.length) {
-      select.innerHTML = '<option value="">No Facebook Pages found</option>';
-      publishStatus.textContent = pagesData.message || pagesData.error || "No Pages found.";
-      return;
-    }
-
-    select.innerHTML = '<option value="">Choose a Facebook Page</option>' +
-      pagesData.pages.map(page =>
-        `<option value="${escapeHTML(page.id)}">${escapeHTML(page.name)}</option>`
-      ).join("");
-
-    if (pagesData.pages.length === 1) {
-      select.value = pagesData.pages[0].id;
-    }
-
-    publishStatus.textContent = "Facebook Pages loaded successfully.";
-
-  } catch (error) {
-    status.textContent = "Could not connect to Facebook.";
-    publishStatus.textContent = error.message || "Please check your internet connection.";
-  }
-}
-
-function loadGeneratedFacebookPost() {
-  const generated = document.getElementById("facebookResultText");
-  const target = document.getElementById("facebookPublishText");
-
-  if (!generated) {
-    toast("Generate a Facebook post first.");
-    return;
-  }
-
-  target.value = generated.innerText.trim();
-  toast("Generated post copied into the publishing box. Review it before publishing.");
-}
-
-async function publishFacebookPost() {
-  const pageId = document.getElementById("fbPageSelect").value;
-  const message = document.getElementById("facebookPublishText").value.trim();
-  const fileInput = document.getElementById("facebookImageFile");
-  const status = document.getElementById("facebookPublishStatus");
-  const button = document.querySelector('button[onclick="publishFacebookPost()"]');
-
-  if (!pageId) {
-    toast("Please select your Facebook Page.");
-    return;
-  }
-
-  if (!message) {
-    toast("Please enter or generate a post first.");
-    return;
-  }
-
-  if (!confirm("Publish this approved post to your selected Facebook Page now?")) {
-    return;
-  }
-
-  let imageData = "";
-  const file = fileInput.files && fileInput.files[0];
-
-  if (file) {
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      toast("Please choose a JPG or PNG image.");
-      return;
-    }
-
-    if (file.size > 8 * 1024 * 1024) {
-      toast("Please choose an image smaller than 8 MB.");
-      return;
-    }
-
-    try {
-      imageData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("Could not read the image."));
-        reader.readAsDataURL(file);
-      });
-    } catch (error) {
-      toast(error.message);
-      return;
-    }
-  }
-
-  button.disabled = true;
-  const originalText = button.textContent;
-  button.textContent = "Publishing...";
-  status.textContent = "Sending your approved post to Facebook...";
-
-  try {
-    const response = await fetch(FACEBOOK_WORKER + "/api/facebook/publish", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({pageId, message, imageData})
-    });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-      throw new Error(result.message || "Facebook publishing failed.");
-    }
-
-    status.textContent = "Published successfully! Post ID: " + (result.post_id || "confirmed");
-    toast("Your post was published to Facebook!");
-    fileInput.value = "";
-
-  } catch (error) {
-    status.textContent = "Publishing failed: " + (error.message || "Please try again.");
-    toast("Facebook publishing failed. Check the message below.");
-
-  } finally {
-    button.disabled = false;
-    button.textContent = originalText;
-  }
-}
-
-window.connectFacebook = connectFacebook;
-window.loadFacebookPages = loadFacebookPages;
-window.loadGeneratedFacebookPost = loadGeneratedFacebookPost;
-window.publishFacebookPost = publishFacebookPost;
-
-/* END FACEBOOK PUBLISHING */
+document.getElementById("fbConnectionStatus").textContent = "Facebook JavaScript loaded successfully.";
 /* INITIALISE */
 
 function initialise(){
@@ -3295,7 +3143,7 @@ drawChart("activityChart");
 
 }
 
-initialise();
+initialise()
 
 window.addEventListener("resize",()=>{
 drawChart("activityChart");
