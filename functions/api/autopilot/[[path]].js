@@ -185,6 +185,7 @@ export async function onRequest(context) {
     const headers = new Headers({
       Authorization: "Bearer " + env.AUTOPILOT_SECRET
     });
+    headers.set("Origin", FRONTEND);
 
     if (request.headers.get("Content-Type")) {
       headers.set("Content-Type", request.headers.get("Content-Type"));
