@@ -1708,7 +1708,134 @@ Your post will only be published when you manually press the Publish button.
 </div>
 
 </section>
+<!-- FACEBOOK MARKETING AUTOPILOT -->
 
+<section class="page" id="autopilot">
+
+<div class="page-heading">
+  <div>
+    <h1>🤖 Facebook Marketing Autopilot</h1>
+    <p>Generate, approve and automatically schedule promotional posts for your Facebook Page.</p>
+  </div>
+</div>
+
+<div class="card">
+
+  <h3>📚 Create Your Facebook Promotion</h3>
+
+  <div class="field">
+    <label>Book Title</label>
+    <input id="fbAutoBookTitle" placeholder="Enter your book title">
+  </div>
+
+  <div class="field">
+    <label>Amazon Book Link</label>
+    <input id="fbAutoBookLink" placeholder="Paste your Amazon book link">
+  </div>
+
+  <div class="form-grid">
+
+    <div class="field">
+      <label>Target Audience</label>
+      <select id="fbAutoAudience">
+        <option>Parents and families</option>
+        <option>Teachers</option>
+        <option>Children's book buyers</option>
+        <option>Adult readers</option>
+        <option>Travel enthusiasts</option>
+        <option>Self-help readers</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Post Style</label>
+      <select id="fbAutoStyle">
+        <option>Emotional storytelling</option>
+        <option>Educational</option>
+        <option>Persuasive</option>
+        <option>Friendly recommendation</option>
+        <option>Book launch</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="field">
+    <label>Facebook Post Content</label>
+    <textarea id="fbAutoMessage" rows="8" placeholder="Your generated Facebook post will appear here. You can edit it before approval."></textarea>
+  </div>
+
+  <div class="field">
+    <label>Attach Book Cover (Optional)</label>
+    <input type="file" id="fbAutoImage" accept="image/jpeg,image/png">
+  </div>
+
+  <button class="btn primary" onclick="generateAutopilotPost()">
+    ✨ Generate Facebook Post
+  </button>
+
+</div>
+
+<div class="card">
+
+  <h3>📅 Approve and Schedule</h3>
+
+  <p style="font-size:12px;color:var(--muted);margin:10px 0">
+    Review your post before approving it for automatic publishing.
+  </p>
+
+  <div class="form-grid">
+
+    <div class="field">
+      <label>Publishing Date</label>
+      <input type="date" id="fbAutoDate">
+    </div>
+
+    <div class="field">
+      <label>Publishing Time</label>
+      <input type="time" id="fbAutoTime">
+    </div>
+
+  </div>
+
+  <button class="btn primary" onclick="scheduleAutopilotPost()">
+    ✅ Approve and Schedule Post
+  </button>
+
+  <div id="fbAutoStatus" style="margin-top:15px;font-size:12px"></div>
+
+</div>
+
+<div class="card">
+
+  <div class="section-title">
+    <h2>📋 Facebook Publishing Queue</h2>
+    <button class="btn" onclick="loadAutopilotQueue()">🔄 Refresh</button>
+  </div>
+
+  <div id="fbAutoQueue">
+    <p style="font-size:12px;color:var(--muted)">
+      Your scheduled Facebook posts will appear here.
+    </p>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+
+    <button class="btn" onclick="toggleAutopilot(true)">
+      ⏸ Pause Publishing
+    </button>
+
+    <button class="btn primary" onclick="toggleAutopilot(false)">
+      ▶ Resume Publishing
+    </button>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- END FACEBOOK MARKETING AUTOPILOT -->
 <!-- PINTEREST -->
 
 <section class="page" id="pinterest">
