@@ -3260,8 +3260,40 @@ async function publishFacebookPost() {
 
     try {
       imageData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => {
+  const img = new Image();
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 1500;
+
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, 1200, 1500);
+
+    const scale = Math.min(
+      1200 / img.width,
+      1500 / img.height
+    );
+
+    const width = img.width * scale;
+    const height = img.height * scale;
+
+    ctx.drawImage(
+      img,
+      (1200 - width) / 2,
+      (1500 - height) / 2,
+      width,
+      height
+    );
+
+    resolve(canvas.toDataURL("image/jpeg", 0.92));
+  };
+
+  img.onerror = () => reject(new Error("Image processing failed."));
+  img.src = reader.result;
+};
         reader.onerror = () => reject(new Error("Could not read image."));
         reader.readAsDataURL(file);
       });
