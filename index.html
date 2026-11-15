@@ -2819,6 +2819,57 @@ Do not invent reviews, awards, results or false claims.`
 }
 
 window.generateAutopilotPost = generateAutopilotPost;
+   /* FACEBOOK AUTOPILOT SECURE LOGIN */
+
+async function loginAutopilot() {
+
+  const passwordInput = document.getElementById("autopilotPassword");
+  const statusBox = document.getElementById("autopilotLoginStatus");
+  const loginCard = document.getElementById("autopilotLoginCard");
+
+  const password = passwordInput.value;
+
+  if (!password) {
+    statusBox.textContent = "Please enter your password.";
+    return;
+  }
+
+  statusBox.textContent = "Checking your password...";
+
+  try {
+
+    const response = await fetch("/api/autopilot/login", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ password })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Login failed.");
+    }
+
+    passwordInput.value = "";
+    loginCard.style.display = "none";
+
+    toast("Facebook Autopilot login successful!");
+
+    if (typeof loadAutopilotQueue === "function") {
+      loadAutopilotQueue();
+    }
+
+  } catch (error) {
+
+    statusBox.textContent = error.message || "Unable to log in.";
+
+  }
+}
+
+window.loginAutopilot = loginAutopilot;
 window.generateTool = generateTool;
 /* COPY AND DOWNLOAD */
 
