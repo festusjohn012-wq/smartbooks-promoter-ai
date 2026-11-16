@@ -167,13 +167,6 @@ export async function onRequest(context) {
     }, 405);
   }
 
-  if (!await validSession(request, env.AUTOPILOT_LOGIN_PASSWORD)) {
-    return json({
-      success: false,
-      message: "Please log in to use Facebook Autopilot."
-    }, 401);
-  }
-
   try {
     const target = new URL(
       "/api/autopilot/" + route,
