@@ -2986,7 +2986,23 @@ async function toggleAutopilot(paused) {
       body: JSON.stringify({ paused })
     });
 
-    const result = await response.json();
+    const rawResponse = await response.text();
+
+let result = {};
+
+try {
+  result = rawResponse ? JSON.parse(rawResponse) : {};
+} catch (error) {
+  throw new Error(
+    `Server returned an invalid response (HTTP ${response.status}).`
+  );
+}
+
+if (!rawResponse) {
+  throw new Error(
+    `Server returned an empty response (HTTP ${response.status}). Check the Pages Function.`
+  );
+   }
 
     if (!response.ok || !result.success) {
       throw new Error(result.message || "Could not update publishing settings.");
