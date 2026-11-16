@@ -2846,9 +2846,20 @@ async function loginAutopilot() {
       },
       body: JSON.stringify({ password })
     });
+    const rawResponse = await response.text();
 
-    const result = await response.json();
+let result = {};
 
+try {
+  result = rawResponse ? JSON.parse(rawResponse) : {};
+} catch (error) {
+  throw new Error(`Invalid server response (HTTP ${response.status}).`);
+}
+
+if (!rawResponse) {
+  throw new Error(`Empty server response (HTTP ${response.status}). Check the Pages Function.`);
+   }
+   
     if (!response.ok || !result.success) {
       throw new Error(result.message || "Login failed.");
     }
