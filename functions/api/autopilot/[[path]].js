@@ -1,4 +1,4 @@
-const WORKER_URL =
+iconst WORKER_URL =
   "https://smartbooks-promoter-ai.festusjohn012.workers.dev";
 
 const FRONTEND =
@@ -88,8 +88,7 @@ async function validSession(request, secret) {
 export async function onRequest(context) {
   const { request, env } = context;
 
-  if (!env.AUTOPILOT_SECRET ||
-      !env.AUTOPILOT_LOGIN_PASSWORD) {
+  if (!env.AUTOPILOT_SECRET) {
     return json({
       success: false,
       message: "Autopilot security configuration is missing."
